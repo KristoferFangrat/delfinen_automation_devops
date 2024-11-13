@@ -1,10 +1,10 @@
-FROM python:3.11.8
+FROM python:3.11-slim-buster
 
-WORKDIR /app
+WORKDIR /streamlit_app
 
 # Kopiera och installera beroenden
 COPY requirements.txt requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Kopiera resten av applikationen
 COPY . .
