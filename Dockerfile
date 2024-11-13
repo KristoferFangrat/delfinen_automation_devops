@@ -7,7 +7,7 @@ COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
 # Kopiera resten av applikationen
-COPY . .
+COPY . /streamlit_app/
 
 # Exponera porten som Streamlit körs på
 EXPOSE 8080
