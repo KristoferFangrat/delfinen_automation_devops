@@ -61,7 +61,8 @@ jobs:
 
         # Tag Docker-image
         - name: Tag Docker image
-          run: docker tag mystreamlitapp ${{ secrets.DOCKERHUB_USERNAME }}/mystreamlitapp:latest
+          run: | 
+            docker tag mystreamlitapp gcr.io/${{ secrets.GCP_PROJECT_ID }}/mystreamlitapp:latest
 
         #Pusha Docker-image till DockerHub
         - name: Push Docker image
