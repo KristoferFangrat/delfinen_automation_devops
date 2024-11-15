@@ -5,6 +5,12 @@ name: Python application
 
 on:
    workflow_dispatch:
+    inputs:
+      show_message:
+        description: "If failed tests log errors"
+        required: true
+        default: "false"
+        type: boolean
 
 jobs:
     build-test-deploy:
@@ -51,7 +57,7 @@ jobs:
         # Bygg och tagga Docker-image
         - name: Build Docker image
           run: |
-            docker build --t gcr.io/{{ secrets.GCP_PROJECT_ID}}/my-streamlit-app .
+            docker build -t gcr.io/{{ secrets.GCP_PROJECT_ID}}/my-streamlit-app .
 
         # Skicka Docker-image till Google Container Registry
         - name: Push docker to image to Google Container Registry
