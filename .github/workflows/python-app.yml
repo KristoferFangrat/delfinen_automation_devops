@@ -57,7 +57,7 @@ jobs:
         # Bygg och tagga Docker-image
         - name: Build Docker image with buildx
           run: |
-            docker buildx build --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-streamlit-app . 
+            docker buildx build --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-streamlit-app:latest . 
 
         # Logga in på DockerHub
 
