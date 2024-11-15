@@ -61,8 +61,8 @@ jobs:
 
         # Tag Docker-image
         - name: Tag Docker image
-          run: docker tag my-streamlit-app ${{ secrets.DOCKERHUB_USERNAME }}/my-streamlit-app:latest
+          run: docker tag my-streamlit-app ${{ secrets.DOCKERHUB_USERNAME }}/mystreamlitapp:latest
 
         #Pusha Docker-image till DockerHub
         - name: Push Docker image
-          run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-streamlit-app:latest
+          run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/mystreamlitapp:latest
