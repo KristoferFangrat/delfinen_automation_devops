@@ -71,3 +71,7 @@ jobs:
         - name: Push Docker image
           run: |
             docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/mystreamlitapp:latest
+        # deploy to Google Run
+        - name: Deploy to Google Run
+          run: |
+            gcloud run deploy mystreamlitapp --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/mystreamlitapp:latest --platform managed --region europe-west1 --allow-unauthenticated
