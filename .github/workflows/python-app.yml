@@ -1,3 +1,24 @@
+Skip to content
+Navigation Menu
+KristoferFangrat
+/
+delfinen_automation_devops
+
+Type / to search
+Code
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+Settings
+Python application
+Python application #26
+Jobs
+Run details
+Workflow file for this run
+.github/workflows/python-app.yml at f76d981
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
@@ -22,23 +43,22 @@ jobs:
         - name: Checkout code
           uses: actions/checkout@v3
 
-          #ställ in python
+        # ställ in python
         - name: Set up Python
           uses: actions/setup-python@v4
           with:
             python-version: '3.11'
 
-        #installera beroenden
+        # installera beroenden
         - name: Install dependencies
           run: |
             python -m pip install --upgrade pip
             pip install -r requirements.txt
-
         # kör tester och logga eventuella felmeddelanden
         - name: Run tests and log errors
           run: |
             pytest tests/ || echo "Test failed. Check logs for details."
-          continue-on-error: false #fortsätter även om testerna misslyckas
+          continue-on-error: false # fortsätter även om testerna misslyckas
 
         # skicka loggfiler som artefakter (om testerna misslyckas)
         - name: Upload test logs
@@ -48,23 +68,29 @@ jobs:
             name: test-logs
             path: pytest.log
 
-        # Logga in DockerHub
-        - name: Log in to DockerHub
-          uses: docker/login-action@v2
+        # autentisera till Google Cloud
+        - name: Authenticate to Google Cloud
+          uses: google-github-actions/auth@v1
           with:
-            username: ${{ secrets.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_PASSWORD }}
+            credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-        # Bygg och tagga Docker-image
+        # konfigurera Docker för GCR
+        - name: Configure Docker for GCR
+          run: gcloud auth configure-docker
+
+        # bygg och tagga Docker-image
         - name: Build Docker image with buildx
-          run: docker build -t mystreamlitapp . 
+          run: docker build -t mystreamlitapp .
 
-        # Tag Docker-image
+        # tagga Docker-image
         - name: Tag Docker image
-          run: | 
+          run: |
             docker tag mystreamlitapp gcr.io/${{ secrets.GCP_PROJECT_ID }}/mystreamlitapp:latest
-
-        #Pusha Docker-image till DockerHub
+        # pusha Docker-image till GCR
         - name: Push Docker image
           run: |
             docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/mystreamlitapp:latest
+        # deploya till Cloud Run
+        - name: Deploy to Cloud Run
+          run: |
+            gcloud run deploy mystreamlitapp --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/mystreamlitapp:latest --platform managed --region europe-west1
