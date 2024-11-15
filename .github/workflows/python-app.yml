@@ -57,11 +57,11 @@ jobs:
 
         # Bygg och tagga Docker-image
         - name: Build Docker image with buildx
-          run: docker build -t my-streamlit-app . 
+          run: docker build -t mystreamlitapp . 
 
         # Tag Docker-image
         - name: Tag Docker image
-          run: docker tag my-streamlit-app ${{ secrets.DOCKERHUB_USERNAME }}/mystreamlitapp:latest
+          run: docker tag mystreamlitapp ${{ secrets.DOCKERHUB_USERNAME }}/mystreamlitapp:latest
 
         #Pusha Docker-image till DockerHub
         - name: Push Docker image
