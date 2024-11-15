@@ -1,16 +1,20 @@
-FROM python:3.11-slim-buster
+# Start from the official Python 3.11 image
+FROM python:3.11-slim
 
-WORKDIR /streamlit_app
+# Set the working directory in the container
+WORKDIR /app
 
-# Kopiera och installera beroenden
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+# Copy the requirements file to the container
+COPY requirements.txt .
 
-# Kopiera resten av applikationen
-COPY . /streamlit_app/
+# Install the dependencies from requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Exponera porten som Streamlit körs på
-EXPOSE 8080
+# Copy the rest of your application code to the container
+COPY . .
 
-# Starta Streamlit-applikationen
-CMD ["streamlit", "run", "streamlit_app.py", "--server.port=8080", "--server.address=0.0.0.0"]
+# Expose the port Streamlit will run on
+EXPOSE 8501
+
+# Command to run the Streamlit app
+CMD ["streamlit", "run", "streamlit_app.py"]

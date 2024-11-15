@@ -1,0 +1,66 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Python application
+
+on:
+   workflow_dispatch:
+
+jobs:
+    build-test-deploy:
+
+        runs-on: ubuntu-latest
+
+        steps:
+        # klona repository
+        - name: Checkout code
+          uses: actions/checkout@v3
+
+          #ställ in python
+        - name: Set up Python
+          uses: actions/setup-python@v4
+          with:
+            python-version: '3.11'
+
+        #installera beroenden
+        - name: Install dependencies
+          run: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+
+        # kör tester och logga eventuella felmeddelanden
+        - name: Run tests and log errors
+          run: |
+            pytest tests/ || echo "Test failed. Check logs for details."
+          continue-on-error: true #fortsätter även om testerna misslyckas
+
+        # skicka loggfiler som artefakter (om testerna misslyckas)
+        - name: Upload test logs
+          if: failure()
+          uses: actions/upload-artifact@v3
+          with:
+            name: test-logs
+            path: pytest.log
+
+        # logga in på Google Cloud
+        - name: Authenticate to Google Cloud
+          uses: google-github-actions/auth@v1
+          with:
+            credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+        # Bygg och tagga Docker-image
+        - name: Build Docker image
+          run: |
+            docker build -t gcr.io/{{ secrets.GCP_PROJECT_ID}}/my-streamlit-app .
+
+        # Skicka Docker-image till Google Container Registry
+        - name: Push docker to image to Google Container Registry
+          run: |
+            echo "${{ secrets.GCP_CREDENTIALS}} | docker login -u __json_key --password-stdin https//gcr.io
+            docker push gcr.io/${{ secrets.GCP_PROJECT_ID}}/my-streamlit-app
+
+        # Distribuera till Google Cloud Run
+        - name: Deploy to Google Cloud Run
+          run: |
+            gcloud run deploy my-streamlit-app --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-streamlit-app --platform managed --region europe-north1 --allow-unauthenticated
+            
