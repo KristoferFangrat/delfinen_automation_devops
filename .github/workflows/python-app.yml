@@ -22,13 +22,13 @@ jobs:
         - name: Checkout code
           uses: actions/checkout@v3
 
-        # ställ in python
+          #ställ in python
         - name: Set up Python
           uses: actions/setup-python@v4
           with:
             python-version: '3.11'
 
-        # installera beroenden
+        #installera beroenden
         - name: Install dependencies
           run: |
             python -m pip install --upgrade pip
@@ -38,7 +38,7 @@ jobs:
         - name: Run tests and log errors
           run: |
             pytest tests/ || echo "Test failed. Check logs for details."
-          continue-on-error: false # fortsätter även om testerna misslyckas
+          continue-on-error: false #fortsätter även om testerna misslyckas
 
         # skicka loggfiler som artefakter (om testerna misslyckas)
         - name: Upload test logs
@@ -48,26 +48,23 @@ jobs:
             name: test-logs
             path: pytest.log
 
-        # autentisera till Google Cloud
-        - name: Authenticate to Google Cloud
-          uses: google-github-actions/auth@v1
+        # Logga in DockerHub
+        - name: Log in to DockerHub
+          uses: docker/login-action@v2
           with:
-            credentials_json: ${{ secrets.GCP_SA_KEY }}
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-        # konfigurera Docker för GCR
-        - name: Configure Docker for GCR
-          run: gcloud auth configure-docker
-
-        # bygg och tagga Docker-image
+        # Bygg och tagga Docker-image
         - name: Build Docker image with buildx
-          run: docker build -t mystreamlitapp .
+          run: docker build -t mystreamlitapp . 
 
-        # tagga Docker-image
+        # Tag Docker-image
         - name: Tag Docker image
-          run: |
+          run: | 
             docker tag mystreamlitapp gcr.io/${{ secrets.GCP_PROJECT_ID }}/mystreamlitapp:latest
 
-        # pusha Docker-image till GCR
+        #Pusha Docker-image till DockerHub
         - name: Push Docker image
           run: |
             docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/mystreamlitapp:latest
