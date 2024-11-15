@@ -57,7 +57,7 @@ jobs:
         # Bygg och tagga Docker-image
         - name: Build Docker image
           run: |
-            docker build -t gcr.io/{{ secrets.GCP_PROJECT_ID}}/my-streamlit-app .
+            docker buildx build --platform linux/amd64 -t gcr.io/{{ secrets.GCP_PROJECT_ID}}/my-streamlit-app . --push
 
         # Skicka Docker-image till Google Container Registry
         - name: Push docker to image to Google Container Registry
