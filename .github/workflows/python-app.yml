@@ -38,7 +38,7 @@ jobs:
         - name: Run tests and log errors
           run: |
             pytest tests/ || echo "Test failed. Check logs for details."
-          continue-on-error: true #fortsätter även om testerna misslyckas
+          continue-on-error: false #fortsätter även om testerna misslyckas
 
         # skicka loggfiler som artefakter (om testerna misslyckas)
         - name: Upload test logs
@@ -62,7 +62,7 @@ jobs:
         # Skicka Docker-image till Google Container Registry
         - name: Push docker to image to Google Container Registry
           run: |
-            echo "${{ secrets.GCP_CREDENTIALS}} | docker login -u __json_key --password-stdin https//gcr.io
+            echo "${{ secrets.GCP_CREDENTIALS}} | docker login -u __json_key --password-stdin https://gcr.io
             docker push gcr.io/${{ secrets.GCP_PROJECT_ID}}/my-streamlit-app
 
         # Distribuera till Google Cloud Run
