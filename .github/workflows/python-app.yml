@@ -48,23 +48,21 @@ jobs:
             name: test-logs
             path: pytest.log
 
-        # logga in på Google Cloud
-        - name: Authenticate to Google Cloud
-          uses: google-github-actions/auth@v1
+        # Logga in DockerHub
+        - name: Log in to DockerHub
+          uses: docker/login-action@v2
           with:
-            credentials_json: ${{ secrets.GCP_SA_KEY }}
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
         # Bygg och tagga Docker-image
         - name: Build Docker image with buildx
-          run: |
-            docker buildx build --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-streamlit-app:latest . 
+          run: docker build -t my-streamlit-app . 
 
-        # Logga in på DockerHub
-
-        - name: Log in to DockerHub
-          run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+        # Tag Docker-image
+        - name: Tag Docker image
+          run: docker tag my-streamlit-app ${{ secrets.DOCKERHUB_USERNAME }}/my-streamlit-app:latest
 
         #Pusha Docker-image till DockerHub
-        - name: Push Docker image to DockerHub
-          run: |
-            docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-streamlit-app
+        - name: Push Docker image
+          run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-streamlit-app:latest
