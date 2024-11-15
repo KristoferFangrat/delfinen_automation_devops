@@ -67,4 +67,4 @@ jobs:
         #Pusha Docker-image till DockerHub
         - name: Push Docker image to DockerHub
           run: |
-            docker push kristoferfangrat/my-streamlit-app
+            docker push kristofer.fangrat@gmail.com/my-streamlit-app
