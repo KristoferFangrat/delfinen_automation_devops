@@ -67,4 +67,4 @@ jobs:
         #Pusha Docker-image till DockerHub
         - name: Push Docker image
           run: |
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/mystreamlitapp:latest
+            docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/mystreamlitapp:latest
