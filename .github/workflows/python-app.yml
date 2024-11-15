@@ -62,7 +62,7 @@ jobs:
         # Logga in på DockerHub
 
         - name: Log in to DockerHub
-          run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}"
+          run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
         #Pusha Docker-image till DockerHub
         - name: Push Docker image to DockerHub
