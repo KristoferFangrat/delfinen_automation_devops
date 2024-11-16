@@ -34,7 +34,7 @@ jobs:
       # Kör tester och logga eventuella felmeddelanden
       - name: Run tests and log errors
         run: |
-          pytest tests/ || echo "Test failed. Check logs for details."
+          pytest testing/ || echo "Test failed. Check logs for details."
         continue-on-error: false # fortsätter även om testerna misslyckas
 
       # Skicka loggfiler som artefakter (om testerna misslyckas)
