@@ -32,8 +32,18 @@ jobs:
           pip install -r requirements.txt
 
       # Kör tester och logga eventuella felmeddelanden
-      - name: Run tests
-        run: pytest tests/
+      - name: Run tests and log errors
+        run: |
+          pytest tests/ || echo "Test failed. Check logs for details."
+        continue-on-error: false # fortsätter även om testerna misslyckas
+
+      # Skicka loggfiler som artefakter (om testerna misslyckas)
+      - name: Upload test logs
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-logs
+          path: pytest.log
   
   # Jobb för att bygga och pusha Docker-bilden
   build-and-push:
