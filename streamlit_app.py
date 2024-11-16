@@ -18,7 +18,7 @@ def layout():
     position = get_position_from_map()
     
     # Sätt standardvärden om ingen position väljs
-    if position is not None:
+    if position != None:
         lat, lon = position[0], position[1]
     else:
         lat, lon = 59.3293, 18.0686  # Standardposition för Stockholm
