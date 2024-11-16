@@ -16,20 +16,25 @@ def layout():
     st.title("Delfinen - Temperature")
     st.write("Please select a location on the map to see the temperature at that location.")
     position = get_position_from_map()
-    if position != None:
+    if position is not None:
         lat, lon = position[0], position[1]
     else:
         lat, lon = 59.3293, 18.0686
         
     st.markdown("## Temperature")
-    current_temp = WeatherData(lat=lat, lon=lon, api_key=os.getenv('api_key')).get_current_temp()
-    st.metric("Current temperature", f"{int(current_temp)} °C")
+    weather_data = WeatherData(lat=lat, lon=lon, api_key=os.getenv('api_key'))
+    current_temp = weather_data.get_current_temp()
+    
+    if current_temp is not None:
+        st.metric("Current temperature", f"{int(current_temp)} °C")
+    else:
+        st.metric("Current temperature", "N/A")
+    
     st.write(f"Showing temperature at latitude {lat} and longitude {lon}.")
 
-
     st.markdown("## Hourly forecast for the next 24 hours")
-    temp_next_24h = WeatherData(lat=lat, lon=lon, api_key=os.getenv('api_key')).get_temp_next_24h()
-    col1, col2 = st.columns([2,1])
+    temp_next_24h = weather_data.get_temp_next_24h()
+    col1, col2 = st.columns([2, 1])
 
     with col2:
         df = pd.DataFrame(temp_next_24h, columns=['Time', 'Temperature'])
