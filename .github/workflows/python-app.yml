@@ -61,7 +61,7 @@ jobs:
 
         # Tag Docker-image för Docker Hub
         - name: Tag Docker image for Docker Hub
-          run: docker tag mystreamlitapp ${{ secrets.DOCKERHUB_USERNAME }}/mystreamlitapp:latest
+          run: docker tag mystreamlitapp ${{ secrets.DOCKERHUB_USERNAME }}/mystreamlitapp:weatherapp
 
         # Pusha Docker-image till Docker Hub
         - name: Push Docker image to Docker Hub
