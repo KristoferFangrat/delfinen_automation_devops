@@ -65,4 +65,4 @@ jobs:
 
         # Pusha Docker-image till Docker Hub
         - name: Push Docker image to Docker Hub
-          run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/mystreamlitapp:latest
+          run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/mystreamlitapp:weatherapp
