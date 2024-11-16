@@ -48,30 +48,21 @@ jobs:
             name: test-logs
             path: pytest.log
 
-        # autentisera till Google Cloud
-        - name: Authenticate to Google Cloud
-          uses: google-github-actions/auth@v1
+                # Logga in på DockerHub
+        - name: Log in to DockerHub
+          uses: docker/login-action@v2
           with:
-            credentials_json: ${{ secrets.GCP_SA_KEY }}
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-        # konfigurera Docker för GCR
-        - name: Configure Docker for GCR
-          run: gcloud auth configure-docker
-
-        # bygg och tagga Docker-image
-        - name: Build Docker image with buildx
+        # Bygg och tagga Docker-image
+        - name: Build Docker image
           run: docker build -t mystreamlitapp .
 
-        # tagga Docker-image
-        - name: Tag Docker image
-          run: |
-            docker tag mystreamlitapp gcr.io/${{ secrets.GCP_PROJECT_ID }}/mystreamlitapp:latest
+        # Tag Docker-image för Docker Hub
+        - name: Tag Docker image for Docker Hub
+          run: docker tag mystreamlitapp ${{ secrets.DOCKERHUB_USERNAME }}/mystreamlitapp:latest
 
-        # pusha Docker-image till GCR
-        - name: Push Docker image
-          run: |
-            docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/mystreamlitapp:latest
-        # deploy to Google Run
-        - name: Deploy to Google Run
-          run: |
-            gcloud run deploy mystreamlitapp --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/mystreamlitapp:latest --platform managed --region europe-west1 --allow-unauthenticated
+        # Pusha Docker-image till Docker Hub
+        - name: Push Docker image to Docker Hub
+          run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/mystreamlitapp:latest
