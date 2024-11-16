@@ -25,6 +25,7 @@ def layout():
     weather_data = WeatherData(lat=lat, lon=lon, api_key=os.getenv('api_key'))
     current_temp = weather_data.get_current_temp()
     
+    # Kontrollera om current_temp är None
     if current_temp is not None:
         st.metric("Current temperature", f"{int(current_temp)} °C")
     else:
