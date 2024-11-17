@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir virtualenv
 RUN virtualenv venv
 
 # Activate the virtual environment and install dependencies
-RUN . venv/bin/activate && pip install --no-cache-dir -r requirements.txt
+RUN . venv/Scripts/activate && pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of your application code to the container
 COPY . .
@@ -23,4 +23,4 @@ COPY . .
 EXPOSE 8080
 
 # Command to run the Streamlit app
-CMD ["streamlit", "run", "streamlit_app.py", "--server.port=8080"]
+CMD ["sh", "-c", ". venv/Scripts/activate &&  streamlit run streamlit_app.py --server.port=8080"]
