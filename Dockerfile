@@ -23,4 +23,4 @@ COPY . .
 EXPOSE 8080
 
 # Command to run the Streamlit app
-CMD ["sh", "-c", ". venv/Scripts/activate &&  streamlit run streamlit_app.py --server.port=8080"]
+CMD ["sh", "-c", ". venv/bin/activate &&  streamlit run streamlit_app.py --server.port=8080"]
