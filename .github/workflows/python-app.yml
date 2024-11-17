@@ -34,7 +34,7 @@ jobs:
       # Kör tester och logga eventuella felmeddelanden
       - name: Run tests and log errors
         run: |
-          pytest testing/ || echo "Test failed. Check logs for details."
+          pytest tests/ || echo "Test failed. Check logs for details."
         continue-on-error: false # fortsätter även om testerna misslyckas
 
       # Skicka loggfiler som artefakter (om testerna misslyckas)
@@ -72,3 +72,23 @@ jobs:
       # Pusha Docker-image till Docker Hub
       - name: Push Docker image to Docker Hub
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/mystreamlitapp:weatherapp
+
+  # Jobb för att distribuera Docker-bilden till Google Cloud Run
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push  # Beroende på att 'build-and-push' är lyckad
+    steps:
+      # Klona repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Logga in på Google Cloud
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      # Distribuera till Google Cloud Run
+      - name: Deploy to Google Cloud Run
+        run: |
+          gcloud run deploy mystreamlitapp --image docker.io/${{ secrets.DOCKERHUB_USERNAME }}/mystreamlitapp:weatherapp --platform managed --region europe-north1 --allow-unauthenticated
