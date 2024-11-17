@@ -21,7 +21,7 @@ class WeatherData:
 
         if weather.status_code == 200:
             weather_data = weather.json()
-            return weather_data('current', {}).get('temp')
+            return weather_data['current']['temp']
         else:
             print('Could not get weather data. Status code:', weather.status_code)
             return None
