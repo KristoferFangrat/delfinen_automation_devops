@@ -22,39 +22,57 @@ def layout():
         lat, lon = 59.3293, 18.0686
         
     st.markdown("## Temperature")
-    current_temp = WeatherData(lat=lat, lon=lon, api_key=os.getenv('api_key')).get_current_temp()
-    st.metric("Current temperature", f"{int(current_temp)} °C")
+    weather_data = WeatherData(lat=lat, lon=lon, api_key=os.getenv('api_key'))
+    current_temp = weather_data.get_current_temp()
+    
+    # Kontrollera om current_temp är None
+    if current_temp is not None:
+        try:
+            st.metric("Current temperature", f"{int(current_temp)} °C")
+        except (TypeError, ValueError) as e:
+            st.metric("Current temperature", "N/A")
+            st.error(f"Error converting current temperature: {e}")
+    else:
+        st.metric("Current temperature", "N/A")
+    
     st.write(f"Showing temperature at latitude {lat} and longitude {lon}.")
 
-
     st.markdown("## Hourly forecast for the next 24 hours")
-    temp_next_24h = WeatherData(lat=lat, lon=lon, api_key=os.getenv('api_key')).get_temp_next_24h()
-    col1, col2 = st.columns([2,1])
+    
+    # Hämta väderdata för de kommande 24 timmarna
+    temp_next_24h = weather_data.get_temp_next_24h()
+    
+    # Kontrollera om temp_next_24h innehåller None-värden
+    if temp_next_24h is None or any(temp is None for _, temp in temp_next_24h):
+        st.write("Temperature data is not available for the next 24 hours.")
+        return
+    
+    # Skapa två kolumner för att visa data och grafik
+    col1, col2 = st.columns([2, 1])
 
     with col2:
+        # Visa en DataFrame med temperaturer för de kommande 24 timmarna
         df = pd.DataFrame(temp_next_24h, columns=['Time', 'Temperature'])
         st.write(df)
 
     with col1:
+        # Skapa och visa en linjediagram för temperaturförutsägelser
         fig, ax = plt.subplots()
         ax.plot(df['Time'], df['Temperature'])
+        
+        # Lägg till temperaturvärden på linjediagrammet
         for i, value in enumerate(df['Temperature']):
-            plt.text(df['Time'][i], df['Temperature'][i], f"{round(value)}°", fontsize=8, ha='left', va='bottom')
+            if value is not None:
+                plt.text(df['Time'][i], df['Temperature'][i], f"{round(value)}°", fontsize=8, ha='left', va='bottom')
+        
+        # Anpassa diagrammets axlar och etiketter
         ax.set_xlim(min(df['Time']), max(df['Time']))
         ax.xaxis.set_tick_params(rotation=45, labelsize=9)
-        ax.yaxis.set_tick_params(labelsize=9)
-        ax.xaxis.set_major_locator(mdates.HourLocator(interval=1))
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%H'))
-        ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
-        ax.spines['right'].set_visible(False)
-        ax.spines['top'].set_visible(False)
-        plt.xlabel('Time')
-        plt.ylabel('Temperature (°C)')
-        plt.title('Temperature forecast for the next 24 hours')
-        st.pyplot(plt)
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Temperature (°C)")
+        ax.set_title("Hourly Temperature Forecast")
+        
+        st.pyplot(fig)
 
-
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     layout()
