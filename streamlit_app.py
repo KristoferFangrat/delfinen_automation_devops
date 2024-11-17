@@ -25,13 +25,9 @@ def layout():
     weather_data = WeatherData(lat=lat, lon=lon, api_key=os.getenv('api_key'))
     current_temp = weather_data.get_current_temp()
     
-    # Kontrollera om current_temp är None
+    # Ändring: Kontrollera om current_temp är None
     if current_temp is not None:
-        try:
-            st.metric("Current temperature", f"{int(current_temp)} °C")
-        except (TypeError, ValueError) as e:
-            st.metric("Current temperature", "N/A")
-            st.error(f"Error converting current temperature: {e}")
+        st.metric("Current temperature", f"{int(current_temp)} °C")
     else:
         st.metric("Current temperature", "N/A")
     
@@ -42,8 +38,8 @@ def layout():
     # Hämta väderdata för de kommande 24 timmarna
     temp_next_24h = weather_data.get_temp_next_24h()
     
-    # Kontrollera om temp_next_24h innehåller None-värden
-    if temp_next_24h is None or any(temp is None for _, temp in temp_next_24h):
+    # Ändring: Kontrollera om temp_next_24h innehåller None-värden
+    if any(temp is None for _, temp in temp_next_24h):
         st.write("Temperature data is not available for the next 24 hours.")
         return
     
@@ -62,8 +58,7 @@ def layout():
         
         # Lägg till temperaturvärden på linjediagrammet
         for i, value in enumerate(df['Temperature']):
-            if value is not None:
-                plt.text(df['Time'][i], df['Temperature'][i], f"{round(value)}°", fontsize=8, ha='left', va='bottom')
+            plt.text(df['Time'][i], df['Temperature'][i], f"{round(value)}°", fontsize=8, ha='left', va='bottom')
         
         # Anpassa diagrammets axlar och etiketter
         ax.set_xlim(min(df['Time']), max(df['Time']))
