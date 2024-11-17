@@ -8,13 +8,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install virtualenv
-RUN pip install --no-cache-dir virtualenv
-
-# Create a virtual environment
-RUN virtualenv venv
-
-# Activate the virtual environment and install dependencies
-RUN . venv/bin/activate && pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of your application code to the container
 COPY . .
@@ -29,4 +23,4 @@ ENV GOOGLE_APPLICATION_CREDENTIALS="/app/service-account-key.json"
 EXPOSE 8080
 
 # Command to run the Streamlit app
-CMD ["sh", "-c", ". venv/bin/activate &&  streamlit run streamlit_app.py --server.port=8080"]
+CMD ["streamlit", "run", "streamlit_app.py", "--server.port=8080"]
