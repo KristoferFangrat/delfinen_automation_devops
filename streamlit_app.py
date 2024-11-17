@@ -16,7 +16,7 @@ def layout():
     st.title("Delfinen - Temperature")
     st.write("Please select a location on the map to see the temperature at that location.")
     position = get_position_from_map()
-    if position is not None:
+    if position != None:
         lat, lon = position[0], position[1]
     else:
         lat, lon = 59.3293, 18.0686
