@@ -34,7 +34,6 @@ def layout():
             st.error(f"Error converting current temperature: {e}")
     else:
         st.metric("Current temperature", "N/A")
-
     
     st.write(f"Showing temperature at latitude {lat} and longitude {lon}.")
 
