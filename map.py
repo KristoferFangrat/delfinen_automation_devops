@@ -11,4 +11,3 @@ def get_position_from_map():
     
 if __name__ == "__main__":
     get_position_from_map()
-
