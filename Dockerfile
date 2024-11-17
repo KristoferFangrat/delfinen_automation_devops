@@ -7,11 +7,8 @@ WORKDIR /app
 # Copy the requirements file to the container
 COPY requirements.txt .
 
-# Install virtualenv
-RUN pip install --no-cache-dir virtualenv
-
 # Create a virtual environment
-RUN virtualenv venv
+RUN python -m venv venv
 
 # Activate the virtual environment and install dependencies
 RUN . venv/bin/activate && pip install --no-cache-dir -r requirements.txt
