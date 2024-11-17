@@ -2,7 +2,7 @@
 FROM python:3.11-slim
 
 # Set the working directory in the container
-WORKDIR /app/streamlit_app
+WORKDIR /app
 
 # Copy the requirements file to the container
 COPY requirements.txt .
