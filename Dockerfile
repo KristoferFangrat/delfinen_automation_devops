@@ -7,11 +7,14 @@ WORKDIR /app
 # Copy the requirements file to the container
 COPY requirements.txt .
 
-# Install the dependencies from requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Install virtualenv
+RUN pip install --no-cache-dir virtualenv
 
-# Verify that all dependencies are installed
-RUN pip check
+# Create a virtual environment
+RUN virtualenv venv
+
+# Activate the virtual environment and install dependencies
+RUN . venv/bin/activate && pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of your application code to the container
 COPY . .
@@ -20,4 +23,4 @@ COPY . .
 EXPOSE 8080
 
 # Command to run the Streamlit app
-CMD ["streamlit", "run", "streamlit_app.py", "--server.port=8080"]
+CMD ["sh", "-c", ". venv/bin/activate &&  streamlit run streamlit_app.py --server.port=8080"]
