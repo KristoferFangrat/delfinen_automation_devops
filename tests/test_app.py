@@ -4,8 +4,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import unittest
 from unittest.mock import patch, MagicMock
-from github.AutomationDevOps.DevOpsProject.delfinen_automation_devops.streamlit_app import layout
-from get_weather import WeatherData
+from delfinen_automation_devops.streamlit_app import layout
+from delfinen_automation_devops.get_weather import WeatherData
 
 class TestStreamlitApp(unittest.TestCase):
 
@@ -23,5 +23,5 @@ class TestStreamlitApp(unittest.TestCase):
         mock_get_current_temp.assert_called_once()
         mock_get_temp_next_24h.assert_called_once()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
