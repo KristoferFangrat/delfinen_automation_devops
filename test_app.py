@@ -1,5 +1,5 @@
 # test_app.py
-from github.AutomationDevOps.DevOpsProject.delfinen_automation_devops.app.streamlit_app import layout
+from github.AutomationDevOps.DevOpsProject.delfinen_automation_devops.streamlit_app import layout
 from get_weather import WeatherData
 import unittest
 from unittest.mock import patch, MagicMock
