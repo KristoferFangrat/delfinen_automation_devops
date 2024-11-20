@@ -42,7 +42,7 @@ jobs:
       - name: Run Streamlit app and check for errors
         run: |
           . venv/bin/activate
-          nohup streamlit run streamlit_app.py &> output.log &
+          nohup streamlit run /app/streamlit_app.py &> output.log &
           sleep 10  # Vänta på att Streamlit-applikationen ska starta
           curl -f http://localhost:8501 || (cat output.log && exit 1)
           pkill -f streamlit
