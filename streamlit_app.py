@@ -9,6 +9,7 @@ import os
 
 dotenv.load_dotenv('.env')
 
+
 def layout():
     """create the layout for the web application"""
 
@@ -28,9 +29,10 @@ def layout():
         st.metric("Current temperature", "N/A")
     st.write(f"Showing temperature at latitude {lat} and longitude {lon}.")
 
+
     st.markdown("## Hourly forecast for the next 24 hours")
     temp_next_24h = WeatherData(lat=lat, lon=lon, api_key=os.getenv('api_key')).get_temp_next_24h()
-    col1, col2 = st.columns([2, 1])
+    col1, col2 = st.columns([2,1])
 
     with col2:
         df = pd.DataFrame(temp_next_24h, columns=['Time', 'Temperature'])
@@ -53,6 +55,9 @@ def layout():
         plt.ylabel('Temperature (°C)')
         plt.title('Temperature forecast for the next 24 hours')
         st.pyplot(plt)
+
+
+
 
 if __name__ == "__main__":
     layout()
