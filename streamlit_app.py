@@ -23,7 +23,10 @@ def layout():
         
     st.markdown("## Temperature")
     current_temp = WeatherData(lat=lat, lon=lon, api_key=os.getenv('api_key')).get_current_temp()
-    st.metric("Current temperature", f"{int(current_temp)} °C")
+    if current_temp is not None:
+        st.metric("Current temperature", f"{int(current_temp)} °C")
+    else:
+        st.metric("Current temperature", "N/A")
     st.write(f"Showing temperature at latitude {lat} and longitude {lon}.")
 
 
