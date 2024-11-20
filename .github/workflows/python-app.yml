@@ -23,23 +23,26 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
-      # Installera beroenden
+      # Installera beroenden och skapa virtuell miljö
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
+          python -m venv venv
+          . venv/bin/activate
           pip install -r requirements.txt
 
       # Kör tester och logga eventuella felmeddelanden
       - name: Run tests and log errors
         run: |
+          . venv/bin/activate
           pytest tests/ || echo "Test failed. Check logs for details."
         continue-on-error: false # fortsätter även om testerna misslyckas
+
       - name: Run Streamlit app and check for errors
         run: |
           . venv/bin/activate
-          streamlit run streamlit_app.py &> output.log || echo (cat output.log && exit 1)
+          streamlit run streamlit_app.py &> output.log || (cat output.log && exit 1)
         continue-on-error: false # fortsätter även om Streamlit-appen misslyckas
 
       # Skicka loggfiler som artefakter (om testerna misslyckas)
@@ -49,11 +52,12 @@ jobs:
         with:
           name: test-logs
           path: pytest.log
-  
+
   # Jobb för att bygga och pusha Docker-bilden
   build-and-push:
     runs-on: ubuntu-latest
     needs: build-and-test  # Beroende på att 'build-and-test' är lyckad
+
     steps:
       # Klona repository
       - name: Checkout code
@@ -74,7 +78,7 @@ jobs:
       - name: Build Docker image
         run: docker build -t mystreamlitapp .
 
-      # Tag Docker-image för Docker Hub
+      # Tagga Docker-image för Docker Hub
       - name: Tag Docker image for Docker Hub
         run: docker tag mystreamlitapp ${{ secrets.DOCKERHUB_USERNAME }}/mystreamlitapp:weatherapp
 
