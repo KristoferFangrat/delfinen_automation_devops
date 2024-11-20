@@ -1,9 +1,10 @@
 import sys
 import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import unittest
 from unittest.mock import patch, MagicMock
-from github.AutomationDevOps.DevOpsProject.delfinen_automation_devops.streamlit_app import layout
+from streamlit_app import layout
 from get_weather import WeatherData
 
 class TestStreamlitApp(unittest.TestCase):
